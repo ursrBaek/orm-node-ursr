@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>ECMAScript2015 - let/const 알아보기</title>
+</head>
+<body>
+  <h1>let/const 학습하기</h1>
+
+  <script>
+    var userName = '백나라';
+    var age = 31;
+    var price = 5000; // 기본 상품가격
+    var isMale = false;
+
+    // 기본 배송비
+    var baseDelyFee = 3000;
+
+    console.log("기본배송비1: ",baseDelyFee);
+
+    // 기본 배송비 변경
+    baseDelyFee = 13000;
+
+    // 전통적인 var 변수선언 방식은 상수(한번 할당하면 변하지 않는 값)개념을 지원하지 않는다.
+    // 언제든지 변경 가능하다.
+    console.log("기본배송비2: ", baseDelyFee);
+
+
+    // ECMAScript2015 문법 사용해보기
+    // 상수 사용하기
+    const newBaseDelyFee = 5000;
+
+    console.log('상수로 표현하는 기본배송비: ', newBaseDelyFee);
+
+    // 상수로 표현된 변수를 바꿔보자.
+    // 상수값을 변경하려 해서 에러 발생함.
+    // newBaseDelyFee = 10000;
+
+    // 총 결제금액 초기값 할당
+    // let으로 선언된 변수는 초기할당이후 변수값 변경이 가능하다. = var
+    let totalPayPrice = 0;
+    console.log("총 결제금액-상수 기본 배송비", totalPayPrice, newBaseDelyFee);
+
+    totalPayPrice = 1;
+    console.log("변경된 총 결제비: ", totalPayPrice);
+
+    // var변수 선언 방식은 블록스코프 개념이 없어서
+    // 특정 블록 안에서 선언된 변수값을 언제든지 밖에서 변경할 수 있음.
+    // 이런 방식은 다양한 문제를 일으킴
+
+    // 총결제금액에 기본 배송비를 추가함.
+    totalPayPrice += baseDelyFee;
+
+    // 총결제금액에 기본 상품가격을 추가함.
+    totalPayPrice += price;
+
+    console.log("총 결제비용: ", totalPayPrice);
+
+    // if문을 통한 블록스코프 정의하기
+    if (isMale === false) {
+      // 상기 조건에 해당하는 현재 범위를 블록스코프라 함
+      // 프로그래밍적으로 특정범위내에서 선언된 변수는
+      // 해당 범위에서만 사용되어야 하고 변경되어야 한다.
+      var msg = '여자입니다.'
+      console.log('현재사용자 성별-가정문내에서의 값: ', msg);
+    } else {
+      console.log('남자입니다.')
+    }
+
+    msg = '남자입니다.';
+    console.log('현재사용자 성별-가정문밖에서의 값: ', msg);
+
+    // var는 위와같이 블록스코프가 안되지만 이를 개선하기 위해
+    // let const는 블록스코프 개념을 준수하고 위배시 아예 에러를 발생시킨다.
+    
+    const region = '제주도';
+
+    if (region === '제주도') {
+      const addDelyFee = 2000;
+      let addMsg = "도서 배송비가 추가되었습니다.";
+      console.log(addMsg);
+      totalPayPrice += addDelyFee;
+      console.log("if블록스코프내에서 선언된 변수/상수는 그 안에서 사용이 가능함-", addDelyFee, totalPayPrice);
+    }
+
+    // 특정 블록스코프 내에서 선언된 let,const값은 범위 밖에서 사용시 에러가 발생... 사용불가
+    // 블록스코프 안에서 선언된 let,const값은 그 안에서만 사용이 가능하다
+    // console.log('if구문 안에서 선언된 메시지변수: ', addMsg);
+    // console.log('if구문 밖에서 선언된 도서배송비: ', addDelyFee);
+
+
+  </script>
+</body>
+</html>

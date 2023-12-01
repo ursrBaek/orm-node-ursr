@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <title>ECMAScript2015 - 템플릿리터럴 실습</title>
+</head>
+<body>
+  <h1>템플릿 문자열 실습</h1>
+  <script>
+    const name = '백나라';
+    const age = 31;
+    let local = '경기도';
+
+    // 전통적인 변수와 문자열 조합 방식. 가독성 떨어지고 정신없음.
+    let introduce = "저를 소개합니다. 이름은 "+name+". 나이는 "+age+"세. "+local+" 삽니다.";
+    console.log('전통적인 문자열과 변수의 조합:', introduce);
+
+    // ECMA2015에 추가된 신규문법 템플릿 문자열 방식으로 변수와 문자열 조합하기
+    let introduce2 = `저를 소개합니다. 이름은 ${name}. 나이는 ${age}세. ${local} 삽니다.`
+    console.log('템플릿 문자열 방식의 문자열과 변수의 조합:', introduce2);
+  </script>
+</body>
+</html>
