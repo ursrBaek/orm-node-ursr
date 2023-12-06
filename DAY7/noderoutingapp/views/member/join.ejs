@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>약관동의</title>
+</head>
+<body>
+  <h1>약관동의</h1>
+  <p>가입 약관을 동의하십니까?</p>
+  <label for="join">네, 동의합니다</label> <input type="checkbox" id="join"/>
+  <button type="button" onclick="fnClickCheck()">확인</button>
+
+  <script>
+    function fnClickCheck() {
+      if (document.getElementById('join').checked === true) {
+        window.location.href = "/member/entry";
+      } else {
+        alert('동의 체크해주세요.');
+      }
+    }
+  </script>
+</body>
+</html>

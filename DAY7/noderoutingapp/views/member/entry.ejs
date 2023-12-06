@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>회원가입 웹페이지</title>
+    <style>
+      input {
+        width: 300px;
+        height: 20px;
+        margin: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>회원가입 페이지</h1>
+    <form action="/member/entry" method="post" onsubmit="return fnFormCheck(event);">
+      메일주소: <input type="text" name="email" id="email" value="" required /> <br />
+      암호: <input type="password" name="password"  id="password" required /><br />
+      이름: <input type="text" name="name"  id="name" required /><br />
+      전화번호: <input type="tel" name="tel"  id="tel" required /><br />
+
+      <input type="submit" value="로그인" />
+    </form>
+
+    <script>
+
+      // 폼 사용자 입력값 유효성 검사 체크함수
+      function fnFormCheck(e) {
+
+        
+        if(document.getElementById('email').value === '') {
+          alert('메일주소 아이디를 입력해주세요.')
+          document.getElementById('email').focus();
+          return false;
+        }
+
+        if(document.getElementById('password').value === '') {
+          alert('사용자 암호를 입력해주세요.')
+          document.getElementById('password').focus();
+          return false;
+        }
+
+        if(document.getElementById('tel').value === '') {
+          alert('전화번호를 입력해주세요.')
+          document.getElementById('tel').focus();
+          return false;
+        }
+
+        if(document.getElementById('name').value === '') {
+          alert('이름을 입력해주세요.')
+          document.getElementById('name').focus();
+          return false;
+        }
+
+        return true;
+      }
+    </script>
+  </body>
+</html>
