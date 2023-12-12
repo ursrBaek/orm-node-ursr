@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      table {
+        border-collapse: collapse;
+      }   
+      th, td {
+        text-align: center;
+        border: 1px solid #dddddd;
+        padding: 8px;
+      } 
+      a {
+        display: block;
+        padding: 10px;
+      }
+
+      .create {
+        margin: 20px;
+      }
+    </style>
+    <title>member - list</title>
+  </head>
+  <body>
+    <h1>member - list</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>멤버Id</th>
+          <th>이름</th>
+          <th>이메일</th>
+          <th>전화번호</th>
+          <th colspan="2">관리</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% memberList.forEach(member => { %>
+          <tr>
+            <td><%=member.member_id%></td>
+            <td><%=member.name%></td>
+            <td><%=member.email%></td>
+            <td><%=member.telephone%></td>
+            <td><a href="/member/modify">수정</a></td>
+            <td><a href="/member/delete">삭제</a></td>
+        </tr>
+          <% }) %>
+      </tbody>
+    </table>
+    <a class="create" href="/member/create">멤버 생성</a>
+  </body>
+</html>

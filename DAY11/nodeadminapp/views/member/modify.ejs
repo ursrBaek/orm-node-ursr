@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>member - modify</title>
+    <style>
+      body {
+        margin: 50px;
+      }
+
+      input {
+        margin: 10px;
+      }
+
+      button {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>member - modify</h1>
+    <form action="/member/create" method="post">
+      멤버id: <input type="text" name="member_id" value="1" disabled /> <br />
+      이름: <input type="text" name="name" value="백나라" required /><br />
+      이메일: <input type="text" name="email" value="djf@naver.com" required /><br />
+      전화번호: <input type="text" name="telephone" value="01020033939" required /><br />
+      <button type="submit">수정하기</button>
+    </form>
+  </body>
+</html>

@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      table {
+        border-collapse: collapse;
+      }   
+      th, td {
+        text-align: center;
+        border: 1px solid #dddddd;
+        padding: 8px;
+      } 
+      a {
+        display: block;
+        padding: 10px;
+      }
+
+      .create {
+        margin: 20px;
+      }
+    </style>
+    <title>admin - list</title>
+  </head>
+  <body>
+    <h1>admin - list</h1>
+
+    <table>
+      <thead>
+        <tr>
+          <th>adminId</th>
+          <th>회사코드</th>
+          <th>아이디</th>
+          <th>비번</th>
+          <th>이름</th>
+          <th>이메일</th>
+          <th>연락처</th>
+          <th colspan="2">관리</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% adminList.forEach(admin => { %>
+          <tr>
+            <td><%=admin.admin_member_id%></td>
+            <td><%=admin.company_code%></td>
+            <td><%=admin.admin_id%></td>
+            <td><%=admin.admin_password%></td>
+            <td><%=admin.admin_name%></td>
+            <td><%=admin.email%></td>
+            <td><%=admin.telephone%></td>
+            <td><a href="/admin/modify">수정</a></td>
+            <td><a href="/admin/delete">삭제</a></td>
+        </tr>
+          <% }) %>
+      </tbody>
+    </table>
+    <a class="create" href="/admin/create">신규 생성</a>
+  </body>
+</html>
