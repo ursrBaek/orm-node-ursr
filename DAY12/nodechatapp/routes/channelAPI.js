@@ -33,10 +33,14 @@ router.get('/all', function (req, res, next) {
 
 // 신규 채널 정보 등록 처리 POST 요청 - 신규 채널 등록 처리
 router.post('/create', function (req, res, next) {
-  const { name, desc } = req.body;
+  const { channel_name, channel_desc } = req.body;
+  const newChannel = { channel_id: 1, channel_name, channel_desc };
 
-  console.log('신규 채널 등록 정보: ', name, desc);
-  res.send('channel create ok');
+  // DB에 저장
+
+  console.log('신규 채널 등록 정보: ', channel_name, channel_desc);
+
+  res.json(newChannel);
 });
 
 // 기존 채널 정보 데이터 수정처리 POST 요청 - 기존 채널 정보 데이터 수정처리

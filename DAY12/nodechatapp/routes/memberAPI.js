@@ -33,7 +33,17 @@ router.get('/all', function (req, res, next) {
 router.post('/create', function (req, res, next) {
   const { name, email, nickname, password } = req.body;
 
-  res.send('member create ok');
+  const newMember = {
+    id: 1,
+    name,
+    email,
+    nickname,
+    password,
+  };
+
+  // DB에 회원 정보 저장
+
+  res.json(newMember);
 });
 
 // 기존 회원 정보 데이터 수정처리 POST 요청 - 기존 회원 정보 데이터 수정처리
