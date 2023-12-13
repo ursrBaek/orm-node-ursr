@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>암호찾기</title>
+    <style>
+      body {
+        margin: 50px;
+      }
+
+      input {
+        margin: 10px;
+      }
+
+      label {
+        display: inline-block;
+        width: 100px;
+        letter-spacing: 1px;
+      }
+
+      button {
+        padding: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>암호찾기</h1>
+    <form action="/find" method="post"">
+      <label for="name">이름:</label> <input type="text" name="name" id="name" value="" required /> <br />
+      <label for="email">이메일:</label> <input type="email" name="email" id="email" value="" required /> <br />
+      <label for="nickname">닉네임:</label> <input type="text" name="nickname" id="nickname" value="" required /> <br />
+
+      <button type="submit" >암호찾기</button>
+    </form>
+  </body>
+</html>

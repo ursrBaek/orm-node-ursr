@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      table {
+        border-collapse: collapse;
+      }   
+      th, td {
+        text-align: center;
+        border: 1px solid #dddddd;
+        padding: 8px;
+      } 
+      a {
+        display: block;
+        padding: 5px;
+      }
+
+      .create {
+        margin: 20px;
+      }
+
+      .chatContent {
+        margin: 10px;
+        width: 400px;
+        height: 300px;
+        padding: 10px;
+        border : 2px solid black;
+      }
+
+      .textBox {
+        margin: 10px;
+        display: flex;
+        width: 400px;
+        justify-content: space-between;
+      }
+
+      button {
+        width: 50px;
+        margin: 10px;
+        padding:5px;
+      }
+    </style>
+    <title>Document</title>
+  </head>
+  <body>
+    <h1>CHAT</h1>
+    <table>
+      <thead>
+        <tr>
+          <th>채널Id</th>
+          <th>채널명</th>
+          <th>채널설명</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% channelList.forEach(channel => { %>
+          <tr>
+            <td><%=channel.channel_id%></td>
+            <td><a href="/api/channel/<%= channel.channel_id %>"><%=channel.channel_name%></a></td>
+            <td><%=channel.channel_desc%></td>
+        </tr>
+          <% }) %>
+      </tbody>
+    </table>
+
+    <div class="chatContent">
+      <h2>채팅</h2>
+      <p>철수: 밥먹었니?</p>
+      <p>나: 아니 배고프다.</p>
+    </div>
+    <div class="textBox">
+      <textarea name="" id="" cols="50" rows="3"></textarea><button>전송</button>
+    </div>
+  </body>
+</html>
