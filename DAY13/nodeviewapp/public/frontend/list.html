@@ -103,25 +103,25 @@
                   <div class="form-group">
                     <label class="control-label" for="OrderNo">게시판</label>
                     <select name="boardTypeCode" id="boardTypeCode" class="form-control">
-                      <option value="0" <%= searchOption.boardTypeCode === '0' ? 'selected' : '' %>>전체</option>
-                      <option value="1" <%= searchOption.boardTypeCode === '1' ? 'selected' : '' %>>공지게시판</option>
-                      <option value="2" <%= searchOption.boardTypeCode === '2' ? 'selected' : '' %>>기술블로깅</option>
+                      <option value="0">전체</option>
+                      <option value="1">공지게시판</option>
+                      <option value="2">기술블로깅</option>
                     </select>
                   </div>
                 </div>
                 <div class="col-sm-4">
                   <div class="form-group">
                     <label class="control-label" for="OrderName">제목</label>
-                    <input type="text" name="title" class="form-control" value="<%=searchOption.title%>" />
+                    <input type="text" name="title" class="form-control" />
                   </div>
                 </div>
                 <div class="col-sm-4">
                   <div class="form-group">
                     <label class="control-label" for="MobileNo">게시여부</label>
                     <select name="isDisplayCode" class="form-control">
-                      <option value="9" <%= searchOption.isDisplayCode === '9' ? 'selected' : '' %>>전체</option>
-                      <option value="1"<%= searchOption.isDisplayCode === '1' ? 'selected' : '' %>>게시함</option>
-                      <option value="0"<%= searchOption.isDisplayCode === '0' ? 'selected' : '' %>>게시안함</option>
+                      <option value="9">전체</option>
+                      <option value="1">게시함</option>
+                      <option value="0">게시안함</option>
                     </select>
                   </div>
                 </div>
@@ -150,19 +150,7 @@
                           <th width="10%">등록일자</th>
                         </tr>
                       </thead>
-                      <tbody class="hoverTblBody">
-                        <% for(var i =0;i<articles.length;i++){ %>
-                          <tr>
-                            <td><%=articles[i].article_id%></td>
-                            <td><%=articles[i].board_type_code == 1 ? '공지게시판' : '기술블로깅'%></td>
-                            <td><a href="/article/modify/<%=articles[i].article_id%>"><%=articles[i].title%></a></td>
-                            <td><%=articles[i].view_count%></td>
-                            <td><%=articles[i].ip_address%></td>
-                            <td><%=articles[i].is_display_code == 1 ? '게시함' : '게시안함'%></td>
-                            <td><%=articles[i].reg_date%></td>
-                          </tr>
-                        <% } %>
-                      </tbody>
+                      <tbody class="hoverTblBody" id="list"></tbody>
                     </table>
                   </div>
                 </div>
@@ -195,17 +183,30 @@
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 
     <script>
-      // 조회폼 입력 유효성 검사
-      $("#searchForm").submit(function(){
-        
-        // if ($('#boardTypeCode').val() == "0") {
-        //   alert("게시판 유형을 선택해주세요.");
-        //   $('#boardTypeCode').focus();
-        //   return false;
-        // }
+      // list.html웹페이지가 서버에서 브라우저로 완전 렌더링 완료된 시점에서
+      // 백엔드 REST API 서비스를 통해 전체 게시글 목록 순수 데이터를 조회해온다.
+      $(document).ready(() => {
+        // step1: 백엔드 restfulAPI 서비스에서 전체 게시글 목록 데이터를 조회해온다.
+        // jquery ajax GET 메서드를 통해 get 방식으로 restful api 라우팅 메소드를 호출한다.
+        $.get('http://localhost:3000/api/article/all', function (res) {
+          $.each(res.data, function (i, item) {
+            console.log('배열내 단일 데이터 출력: ', item);
 
-        return true;
-      })
+            const trTag = `
+            <tr>
+              <td>${item.article_id}</td>
+              <td>${item.board_type_code}</td>
+              <td><a href="/article/modify/${item.article_id}">${item.title}</a></td>
+              <td>${item.view_count}</td>
+              <td>${item.ip_address}</td>
+              <td>${item.is_display_code}</td>
+              <td>${item.reg_date}</td>
+            </tr>`;
+
+            $('#list').append(trTag);
+          });
+        });
+      });
     </script>
   </body>
 </html>
