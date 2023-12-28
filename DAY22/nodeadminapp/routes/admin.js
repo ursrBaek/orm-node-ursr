@@ -3,80 +3,99 @@
 var express = require('express');
 var router = express.Router();
 
-const adminList = [
-  {
-    admin_member_id: 1,
-    company_code: 100,
-    admin_id: 'NARA',
-    admin_password: 'nara123',
-    admin_name: '백나라',
-    email: 'nara@naver.com',
-    telephone: '0101231234',
-    dept_name: 'aa',
-    used_yn_code: 1,
-    reg_user_id: 1,
-    edit_user_id: 1,
-    edit_date: '2022-01-01',
-    reg_date: '2022-01-01',
-  },
-  {
-    admin_member_id: 2,
-    company_code: 200,
-    admin_id: 'COCO',
-    admin_password: 'coco123',
-    admin_name: '코코',
-    email: 'coco@naver.com',
-    telephone: '01011111111',
-    dept_name: 'bb',
-    used_yn_code: 0,
-    reg_user_id: 2,
-    edit_user_id: 2,
-    edit_date: '2022-01-02',
-    reg_date: '2022-01-02',
-  },
-  {
-    admin_member_id: 3,
-    company_code: 300,
-    admin_id: 'TOM',
-    admin_password: 'tom123',
-    admin_name: '톰',
-    email: 'tom@naver.com',
-    telephone: '0102222222',
-    dept_name: 'cc',
-    used_yn_code: 1,
-    reg_user_id: 3,
-    edit_user_id: 3,
-    edit_date: '2022-01-03',
-    reg_date: '2022-01-03',
-  },
-];
+var db = require('../models');
+const Op = db.Sequelize.Op;
 
 /* GET home page. */
-router.get('/list', function (req, res, next) {
-  res.render('admin/list', { adminList });
+router.get('/list', async function (req, res, next) {
+  const adminList = await db.Admin.findAll();
+
+  res.render('admin/list', { adminList, searchOption: {} });
 });
 
-router.post('/list', function (req, res, next) {
-  res.render('admin/list', { adminList });
+router.post('/list', async function (req, res, next) {
+  const { admin_name, admin_id, used_yn_code } = req.body;
+
+  const searchOption = {
+    admin_name,
+    admin_id,
+    used_yn_code: used_yn_code === '9' ? '' : used_yn_code,
+  };
+
+  const queryOptionObj = {};
+
+  for (let key in searchOption) {
+    if (searchOption[key]) {
+      queryOptionObj[key] = searchOption[key];
+    }
+  }
+  console.log('옵션!: ', queryOptionObj, searchOption);
+
+  const adminList = await db.Admin.findAll({ where: queryOptionObj });
+
+  res.render('admin/list', { adminList, searchOption });
 });
 
 router.get('/create', function (req, res, next) {
-  res.render('admin/create', { title: 'Express' });
+  res.render('admin/create');
 });
 
-router.post('/create', function (req, res, next) {
+router.post('/create', async function (req, res, next) {
+  const { admin_id, admin_password, admin_name, email, telephone, company_code, dept_name, used_yn_code } = req.body;
+
+  const admin = {
+    admin_id,
+    admin_password,
+    admin_name,
+    email,
+    telephone,
+    company_code,
+    dept_name,
+    used_yn_code,
+    reg_user_id: 1,
+  };
+
+  await db.Admin.create(admin);
+
   res.redirect('/admin/list');
 });
 
-router.get('/modify/:aid', function (req, res, next) {
-  res.render('admin/modify', { admin: adminList[0] });
+router.get('/modify/:aid', async function (req, res, next) {
+  const admin_member_id = req.params.aid;
+
+  const admin = await db.Admin.findOne({ where: { admin_member_id } });
+
+  res.render('admin/modify', { admin });
 });
 
-router.post('/modify/:aid', function (req, res, next) {
+router.post('/modify/:aid', async function (req, res, next) {
+  const admin_member_id = req.params.aid;
+
+  const { admin_id, admin_password, admin_name, email, telephone, company_code, dept_name, used_yn_code } = req.body;
+
+  const admin = {
+    admin_id,
+    admin_password,
+    admin_name,
+    email,
+    telephone,
+    company_code,
+    dept_name,
+    used_yn_code,
+    edit_user_id: 2,
+    edit_date: Date.now(),
+  };
+
+  await db.Admin.update(admin, { where: { admin_member_id } });
+
   res.redirect('/admin/list');
 });
 
-router.get('/delete', function (req, res, next) {
+router.get('/delete', async function (req, res, next) {
+  const admin_member_id = req.query.aid;
+
+  var deletedCnt = await db.Admin.destroy({ where: { admin_member_id } });
+
   res.redirect('/admin/list');
 });
 
