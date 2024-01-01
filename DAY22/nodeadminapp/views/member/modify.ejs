@@ -19,19 +19,19 @@
 
 <!--우측 콘텐츠 영역 -->
 <div class="wrapper wrapper-content">
-  <form action="/member/create" method="post">
+  <form action="/member/modify/<%=member.member_id%>" method="post">
     <div class="ibox-content m-b-sm border-bottom">
       <div class="row">
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">메일주소</label>
-            <input type="text" name="email" class="form-control" value="<%=member.member_id%>" />
+            <input type="text" name="email" class="form-control" value="<%=member.email%>" />
           </div>
         </div>
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">비밀번호</label>
-            <input type="password" name="password" class="form-control" value="<%=member.member_password%>" />
+            <input type="password" name="member_password" class="form-control" value="<%=member.member_password%>" />
           </div>
         </div>
 
@@ -47,7 +47,7 @@
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">사진업로드</label>
-            <input type="file" class="form-control" name="file" />
+            <input type="file" class="form-control" name="profile_img_path" />
           </div>
         </div>
         <div class="col-sm-4">
@@ -60,7 +60,7 @@
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">생년월일</label>
-            <input type="text" class="form-control" name="birthday" value="<%=member.birth_date%>" />
+            <input type="text" class="form-control" name="birth_date" value="<%=member.birth_date%>" />
           </div>
         </div>
       </div>
@@ -68,21 +68,20 @@
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">회원가입유형</label>
-            <select name="entryTypeCode" class="form-control">
-              <option value="0">직접가입</option>
-              <option value="1">SNS-Facebook</option>
-              <option value="2">SNS-Google</option>
-              <option value="3">SNS-Kakao</option>
+            <select name="entry_type_code" class="form-control">
+              <option value="0" <%= member.used_yn_code === "0" ? 'selected' : '' %>>직접가입</option>
+              <option value="1" <%= member.used_yn_code === "1" ? 'selected' : '' %>>SNS-Facebook</option>
+              <option value="2" <%= member.used_yn_code === "2" ? 'selected' : '' %>>SNS-Google</option>
+              <option value="3" <%= member.used_yn_code === "3" ? 'selected' : '' %>>SNS-Kakao</option>
             </select>
           </div>
         </div>
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">가입상태정보</label>
-            <select name="entryStateCode" class="form-control">
-              <option value="0">일시중지</option>
-              <option value="1">사용중</option>
-              <option value="2">탈퇴상태</option>
+            <select name="use_state_code" class="form-control">
+              <option value="0" <%= member.used_yn_code === "0" ? 'selected' : '' %>>활동중지</option>
+              <option value="1" <%= member.used_yn_code === "1" ? 'selected' : '' %>>활동중</option>
             </select>
           </div>
         </div>
@@ -90,7 +89,7 @@
         <div class="col-sm-4">
           <div class="form-group">
             <label class="control-label">가입일시</label>
-            <input type="text" class="form-control" readonly value="2023-11-22" />
+            <input type="text" class="form-control" readonly value="<%=member.reg_date%>" />
           </div>
         </div>
       </div>
@@ -109,7 +108,7 @@
     if (confirm('정말로 삭제하시겠습니까?')) {
       // 사용자가 confirm창의 확인 버튼을 누르면 true가 반환되기 때문에
       // 확인 버튼 클릭시 실행해야하는 기능 구현
-      location.href = '/member/delete?cid=<%=member.member_id%>';
+      location.href = '/member/delete?mid=<%=member.member_id%>';
     } else {
       alert('삭제를 취소했습니다.');
     }
