@@ -39,8 +39,8 @@
                     <label class="control-label" for="MobileNo">채널 오픈상태</label>
                     <select name="channel_state_code" class="form-control">
                       <option value="9" <%= searchOption.channel_state_code === '9' ? 'selected' : '' %>>전체</option>
-                      <option value="1"<%= searchOption.channel_state_code === '1' ? 'selected' : '' %>>Y</option>
-                      <option value="0"<%= searchOption.channel_state_code === '0' ? 'selected' : '' %>>N</option>
+                      <option value="1"<%= searchOption.channel_state_code === '1' ? 'selected' : '' %>>사용중</option>
+                      <option value="0"<%= searchOption.channel_state_code === '0' ? 'selected' : '' %>>사용안함</option>
                     </select>
                   </div>
                 </div>
@@ -60,12 +60,12 @@
                     <table class="table table-hover">
                       <thead>
                         <tr>
-                          <th width="5%">채널아이디</th>
-                          <th width="20%">채널명</th>
-                          <th width="20%">채널설명</th>
+                          <th width="5%">채널번호</th>
+                          <th width="15%">채널명</th>
+                          <th width="25%">채널설명</th>
                           <th width="10%">채널오픈상태</th>
                           <th width="10%">등록일</th>
-                          <th width="10%">동시 접속자</th>
+                          <th width="10%">최대 동시 접속자</th>
                         </tr>
                       </thead>
                       <tbody class="hoverTblBody">
@@ -74,7 +74,7 @@
                             <td><%=channel.channel_id%></td>
                             <td><a href="/channel/modify/<%=channel.channel_id%>"><%=channel.channel_name%></a></td>
                             <td><%=channel.channel_desc%></td>
-                            <td><%=channel.channel_state_code == 1 ? 'Y' : 'N'%></td>
+                            <td><%=channel.channel_state_code == 1 ? '사용중' : '사용안함'%></td>
                             <td><%=channel.reg_date%></td>
                             <td><%=channel.user_limit%></td>
                           </tr>
