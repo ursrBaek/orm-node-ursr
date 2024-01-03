@@ -63,18 +63,26 @@ router.post('/entry', async function (req, res, next) {
 
 // 암호 찾기 웹 페이지 GET 요청 - 암호찾기 웹페이지 응답
 router.get('/find', function (req, res, next) {
-  res.render('find.ejs');
+  res.render('find.ejs', { resultMsg: '', userPassword: '' });
 });
 
-// *******+*+*+*+**+**++***+**+**+*
-// 암호찾기 post 마무리 해야됨~~~~
-// *******+*+*+*+**+**++***+**+**+*
-
 // 암호찾기 처리 POST 요청 - 암호 찾기 완료 후 로그인 페이지 이동처리
-router.post('/find', function (req, res, next) {
+router.post('/find', async function (req, res, next) {
   const { email, telephone } = req.body;
-  console.log('암호찾기 사용자 입력 정보: ', email, telephone);
-  res.redirect('/login');
+
+  const member = await db.Member.findOne({ where: { email, telephone } });
+
+  if (member) {
+    res.render('find.ejs', {
+      resultMsg: '비밀번호 찾기 완료.',
+      userPassword: member.member_password,
+    });
+  } else {
+    res.render('find.ejs', {
+      resultMsg: '입력하신 회원정보가 존재하지 않습니다.',
+      userPassword: '',
+    });
+  }
 });
 
 module.exports = router;

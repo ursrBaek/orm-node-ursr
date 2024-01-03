@@ -13,9 +13,16 @@
         <input type="text" name="telephone" required />
         <div class="field-placeholder">전화번호</div>
       </div>
+      <p style="color: rgb(178, 0, 0)"><%= resultMsg %></p>
       <div class="actions">
         <button type="submit" class="btn btn-primary ml-auto">Submit</button>
       </div>
     </div>
   </div>
 </form>
+<script>
+  if ('<%= userPassword %>') {
+    alert(`비밀번호는 ${'<%= userPassword %>'} 입니다.`);
+    location.href = '/login';
+  }
+</script>

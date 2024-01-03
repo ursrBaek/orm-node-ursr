@@ -5,42 +5,10 @@ var router = express.Router();
 
 // Model영역에서 db객체 참조하기
 var db = require('../models/index');
-
-const memberList = [
-  {
-    member_id: 1,
-    member_password: '1234',
-    email: 'momo@naver.com',
-    name: '모모',
-    telephone: '010131311',
-    birth_date: '1991.11.11',
-    use_state_code: 1,
-    reg_date: '2021-11-22',
-  },
-  {
-    member_id: 2,
-    member_password: '1234',
-    email: 'jojo@naver.com',
-    name: '조조',
-    telephone: '010222222',
-    birth_date: '1991.11.12',
-    use_state_code: 0,
-    reg_date: '2021-11-23',
-  },
-  {
-    member_id: 3,
-    member_password: '1234',
-    email: 'toto@naver.com',
-    name: '토토',
-    telephone: '010333333',
-    birth_date: '1991.11.14',
-    use_state_code: 1,
-    reg_date: '2021-11-24',
-  },
-];
+const Member = db.Member;
 
 // 전체 회원목록 데이터 조회 GET 요청 - 전체 회원 목록 데이터 응답
-router.get('/all', function (req, res, next) {
+router.get('/all', async function (req, res, next) {
   const apiResult = {
     code: 200,
     data: [],
@@ -48,6 +16,7 @@ router.get('/all', function (req, res, next) {
   };
 
   try {
+    const memberList = await db.Admin.findAll();
     apiResult.code = 200;
     apiResult.data = memberList;
     apiResult.result = 'ok';

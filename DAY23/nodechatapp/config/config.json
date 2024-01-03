@@ -2,7 +2,7 @@
   "development": {
     "username": "root",
     "password": "koko22477!",
-    "database": "modu_chat2",
+    "database": "modu_chat",
     "host": "127.0.0.1",
     "dialect": "mysql"
   },
