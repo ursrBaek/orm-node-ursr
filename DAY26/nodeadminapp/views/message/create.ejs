@@ -1,0 +1,120 @@
+<!--우측 콘텐츠 헤더영역 -->
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>메시지 정보 관리</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a href="/">Home ></a>
+      </li>
+      <li>
+        <a>메시지 정보 등록 ></a>
+      </li>
+      <li class="active">
+        <strong>등록</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-2"></div>
+</div>
+
+<!--우측 콘텐츠 영역 -->
+<form action="/message/create" method="post">
+  <div class="wrapper wrapper-content">
+    <div class="ibox-content m-b-sm border-bottom">
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">메시지 로깅 고유번호</label>
+            <input type="text" class="form-control" name="channel_msg_id" readonly />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">채널고유번호</label>
+            <input type="text" class="form-control" name="channel_id" required />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">사용자고유번호</label>
+            <input type="text" class="form-control" name="member_id" required />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="control-label">채팅닉네임</label>
+            <input type="text" class="form-control" name="nick_name" required />
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <div class="form-group">
+            <label class="control-label">IP주소</label>
+            <input type="text" class="form-control" name="ip_address" required />
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <div class="form-group">
+            <label class="control-label">원본채팅메시지</label>
+            <textarea type="text" rows="4" class="form-control" name="message" required></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">채널 고유 커넥션아이디</label>
+            <input type="text" class="form-control" name="connection_id" required />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">최상위 메시지 고유번호</label>
+            <input type="text" class="form-control" name="top_channel_msg_id" required />
+          </div>
+        </div>
+
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label" for="MobileNo">로깅유형코드</label>
+            <select name="msg_type_code" class="form-control">
+              <option value="1">입장</option>
+              <option value="0">퇴장</option>
+              <option value="3">일반메시지</option>
+              <option value="4">파일</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">등록일시</label>
+            <input type="text" class="form-control" name="msg_date" readonly />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">수정일시</label>
+            <input type="text" class="form-control" name="edit_date" readonly />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label">삭제일시</label>
+            <input type="text" class="form-control" name="del_date" readonly />
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">저장</button>
+        <a href="/channel/list" class="btn btn-info">목록</a>
+      </div>
+    </div>
+  </div>
+</form>

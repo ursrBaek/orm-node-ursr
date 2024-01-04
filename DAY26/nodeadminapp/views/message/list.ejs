@@ -1,0 +1,113 @@
+<!--우측 상단 헤더 영역 -->
+<div class="row wrapper border-bottom white-bg page-heading">
+  <div class="col-lg-10">
+    <h2>메시지 정보 관리</h2>
+    <ol class="breadcrumb">
+      <li>
+        <a href="/">Home ></a>
+      </li>
+      <li>
+        <a>메시지 정보 관리 ></a>
+      </li>
+      <li class="active">
+        <strong>조회</strong>
+      </li>
+    </ol>
+  </div>
+  <div class="col-lg-2"></div>
+</div>
+
+<!--우측 콘텐츠 영역 -->
+<div class="wrapper wrapper-content">
+  <form action="/message/list" method="post">
+    <div class="ibox-content m-b-sm border-bottom">
+      <div class="row">
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label" for="OrderNo">닉네임</label>
+            <input type="text" class="form-control" name="nick_name" value="<%=searchOption.nick_name%>" />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label" for="MobileNo">채널고유번호</label>
+            <input type="text" class="form-control" name="channel_id" value="<%=searchOption.channel_id%>" />
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="form-group">
+            <label class="control-label" for="OrderName">로깅유형</label>
+            <select name="msg_type_code" id="msg_type_code" class="form-control">
+              <option value="9" <%= searchOption.msg_type_code === '' ? 'selected' : '' %>>전체</option>
+              <option value="1" <%= searchOption.msg_type_code === '1' ? 'selected' : '' %>>입장</option>
+              <option value="0" <%= searchOption.msg_type_code === '0' ? 'selected' : '' %>>퇴장</option>
+              <option value="3" <%= searchOption.msg_type_code === '3' ? 'selected' : '' %>>일반메시지</option>
+              <option value="4" <%= searchOption.msg_type_code === '4' ? 'selected' : '' %>>파일</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="text-center">
+        <button type="submit" class="btn btn-primary">조회</button>
+        <a href="/message/create" class="btn btn-info">신규</a>
+      </div>
+    </div>
+  </form>
+  <div class="row">
+    <div class="col-lg-12">
+      <div class="ibox float-e-margins">
+        <div class="ibox-content">
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th width="10%">순번</th>
+                  <th width="15%">닉네임</th>
+                  <th width="30%">내용</th>
+                  <th width="15%">채널ID</th>
+                  <th width="10%">로깅유형</th>
+                  <th width="20%">등록일시</th>
+                </tr>
+              </thead>
+              <tbody class="hoverTblBody">
+                <% messageList.forEach(message => { %>
+                  <tr>
+                    <td><%=message.channel_msg_id%></td>
+                    <td>
+                      <a href="/message/modify/<%=message.channel_msg_id%>"
+                        ><%=message.nick_name%></a
+                      >
+                    </td>
+                    <td><%=message.message%></td>
+                    <td><%=message.channel_id%></td>
+                    <td>
+                      <% 
+                        switch (message.msg_type_code) {
+                          case 1:
+                            %>입장<%
+                            break;
+                          case 0:
+                            %>퇴장<%
+                            break;
+                          case 3:
+                            %>일반메시지<%
+                            break;
+                          case 4:
+                            %>파일<%
+                            break;
+                          default:
+                            %>다른 타입<%
+                        }
+                      %>
+                    </td>
+                    <td><%=message.msg_date%></td>
+                  </tr>
+                  <% }) %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
