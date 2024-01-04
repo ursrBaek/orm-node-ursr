@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+require('dotenv').config();
+
 const connect = () => {
   if (process.env.NODE_ENV !== 'production') {
     //현재 소스 실행환경이 개발환경인 경우 디버깅 가능하게 설정한다.
@@ -6,7 +8,7 @@ const connect = () => {
   }
   //몽고DB연결정보를 설정합니다.
   mongoose.connect(
-    'mongodb://nara:dodo22477!@127.0.0.1:27017/admin',
+    `mongodb://${process.env.MONGO_DB_ID}:${process.env.MONGO_DB_PASSWORD}@127.0.0.1:27017/admin`,
     {
       dbName: 'modu_chat',
     },

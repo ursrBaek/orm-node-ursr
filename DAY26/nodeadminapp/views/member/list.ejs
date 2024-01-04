@@ -38,8 +38,12 @@
                 </div>
                 <div class="col-sm-4">
                   <div class="form-group">
-                    <label class="control-label" for="MobileNo">전화번호</label>
-                    <input type="text" name="telephone" class="form-control" value="<%=searchOption.telephone%>" />
+                    <label class="control-label">가입상태정보</label>
+                    <select name="use_state_code" class="form-control">
+                      <option value="9" <%= searchOption.used_yn_code == "" ? 'selected' : '' %>>전체</option>
+                      <option value="1" <%= searchOption.used_yn_code == "1" ? 'selected' : '' %>>활동중</option>
+                      <option value="0" <%= searchOption.used_yn_code == "0" ? 'selected' : '' %>>활동중지</option>
+                    </select>
                   </div>
                 </div>
               </div>

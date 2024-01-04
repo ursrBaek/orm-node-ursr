@@ -12,8 +12,8 @@ router.get('/list', async function (req, res, next) {
 });
 
 router.post('/list', async function (req, res, next) {
-  const { name, email, telephone } = req.body;
-  const searchOption = { name, email, telephone };
+  const { name, email, use_state_code } = req.body;
+  const searchOption = { name, email, use_state_code: use_state_code == '9' ? '' : use_state_code };
 
   const queryOptionObj = {};
 
