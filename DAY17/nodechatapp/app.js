@@ -3,6 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var swaggerUI = require('swagger-ui-express');
+var swaggerJsDoc = require('swagger-jsdoc');
 
 // express-ejs-layouts 패키지 참조
 var expressLayouts = require('express-ejs-layouts');
@@ -14,6 +16,27 @@ var channelAPIRouter = require('./routes/channelAPI');
 var memberAPIRouter = require('./routes/memberAPI');
 
 var app = express();
+
+// api 문서에 대한 설정
+const options = {
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'Member API',
+      version: '1.0.0',
+      description: 'Chat app의 member API',
+    },
+    servers: [
+      {
+        url: 'http://localhost:3000',
+      },
+    ],
+  },
+  apis: ['./routes/*.js'],
+};
+
+const specs = swaggerJsDoc(options);
+app.use('/api-docs', swaggerUI.serve, swaggerUI.setup(specs));
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
