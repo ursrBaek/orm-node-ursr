@@ -1,0 +1,32 @@
+<form action="/find" method="post">
+  <div class="login-screen">
+    <div class="login-body pb-4">
+      <a href="index.html" class="login-logo">
+        <img src="img/logo.svg" alt="Quick Chat" />
+      </a>
+      <h5>비밀번호 찾기</h5>
+      <h6>비밀번호를 찾으려는 계정의 정보를 입력해주세요.</h6>
+      <div class="field-wrapper mb-3">
+        <input type="text" name="name" value="<%=inputValue.name%>" required autofocus />
+        <div class="field-placeholder">이름</div>
+      </div>
+      <div class="field-wrapper mb-3">
+        <input type="email" name="email" value="<%=inputValue.email%>" required />
+        <div class="field-placeholder">이메일</div>
+      </div>
+      <div class="field-wrapper mb-3">
+        <input type="text" name="birth_date" value="<%=inputValue.name%>" required />
+        <div class="field-placeholder">생년월일</div>
+      </div>
+      <div class="field-wrapper mb-3">
+        <input type="text" name="telephone" value="<%=inputValue.telephone%>" required />
+        <div class="field-placeholder">전화번호</div>
+      </div>
+      <p style="color: rgb(178, 0, 0)"><%= resultMsg %></p>
+      <div class="actions">
+        <button type="submit" class="btn btn-primary ml-auto">비밀번호 찾기</button>
+      </div>
+    </div>
+  </div>
+</form>
+<script></script>
