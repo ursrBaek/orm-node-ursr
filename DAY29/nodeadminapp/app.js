@@ -4,6 +4,10 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+// 환경설정파일 호출하기: 전역정보로 설정됩니다.
+// 호출위치는 반드시 app.js내 최상위에서 호출할 것....
+require('dotenv').config();
+
 var sequelize = require('./models').sequelize;
 
 // express-ejs-layouts 패키지 참조
@@ -13,6 +17,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var articleRouter = require('./routes/article');
 var articleAPIRouter = require('./routes/articleAPI');
+var adminRouter = require('./routes/admin');
 
 var app = express();
 
@@ -38,6 +43,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/article', articleRouter);
+app.use('/admin', adminRouter);
 app.use('/api/article', articleAPIRouter);
 
 // catch 404 and forward to error handler
