@@ -10,6 +10,8 @@ var swaggerJsDoc = require('swagger-jsdoc');
 // 호출위치는 반드시 app.js내 최상위에서 호출할 것....
 require('dotenv').config();
 
+const cors = require('cors');
+
 var sequelize = require('./models/index.js').sequelize;
 
 // express-ejs-layouts 패키지 참조
@@ -25,6 +27,17 @@ var app = express();
 
 //mysql과 자동연결처리 및 모델기반 물리 테이블 생성처리제공
 sequelize.sync();
+
+// 모든 도메인 api 요청 허용
+// app.use(cors());
+
+//특정 도메인주소만 허가
+app.use(
+  cors({
+    methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+    origin: ['http://localhost:3005', 'http://naver.com'],
+  }),
+);
 
 // api 문서에 대한 설정
 const options = {

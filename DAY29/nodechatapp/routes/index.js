@@ -1,7 +1,11 @@
 // 공통 페이지 제공(로그인, 회원가입, 암호찾기)
-
 var express = require('express');
 var router = express.Router();
+
+const bcrypt = require('bcryptjs');
+
+// Model영역에서 db객체 참조하기
+var db = require('../models/index');
 
 router.get('/', function (req, res) {
   res.render('index.ejs', { layout: false });
@@ -9,14 +13,27 @@ router.get('/', function (req, res) {
 
 // 로그인 웹페이지 GET 요청 - login 웹페이지 응답
 router.get('/login', function (req, res, next) {
-  res.render('login.ejs');
+  res.render('login.ejs', { resultMsg: '', email: '', member_password: '' });
 });
 
 // 로그인처리 POST 요청 - 로그인 처리 및 채팅 페이지 이동
-router.post('/login', function (req, res, next) {
-  const { email, password } = req.body;
-  console.log('로그인 시도 아이디, 비번: ', email, password);
-  res.redirect('/chat');
+router.post('/login', async function (req, res, next) {
+  const { email, member_password } = req.body;
+
+  const member = await db.Member.findOne({ where: { email } });
+
+  if (member) {
+    const isPasswordMatched = await bcrypt.compare(member_password, member?.member_password);
+    if (isPasswordMatched) {
+      res.redirect('/');
+    } else {
+      res.render('login', {
+        resultMsg: '이메일 또는 비밀번호를 잘못 입력하셨습니다.',
+        email,
+        member_password,
+      });
+    }
+  }
 });
 
 // 회원가입 웹페이지 GET 요청 - 회원가입 웹페이지 응답
@@ -25,9 +42,25 @@ router.get('/entry', function (req, res, next) {
 });
 
 // 회원가입 처리 POST 요청 - 회원가입 처리 후 로그인페이지 이동
-router.post('/entry', function (req, res, next) {
-  const { name, password, telephone, email } = req.body;
-  console.log('회원가입 정보: ', name, password, nickname, email, telephone);
+router.post('/entry', async function (req, res, next) {
+  const { name, member_password, telephone, email } = req.body;
+
+  const encryptedPassword = await bcrypt.hash(member_password, 12);
+
+  const newMember = {
+    name,
+    member_password: encryptedPassword,
+    telephone,
+    email,
+    profile_img_path: 'https://www.interpark.com/images/header/nav/icon_special.png',
+    entry_type_code: 0,
+    use_state_code: 1,
+    reg_date: Date.now(),
+    reg_member_id: 2,
+  };
+
+  await db.Member.create(newMember);
+
   res.redirect('/login');
 });
 
