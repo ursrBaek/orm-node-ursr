@@ -6,6 +6,12 @@ var logger = require('morgan');
 var swaggerUI = require('swagger-ui-express');
 var swaggerJsDoc = require('swagger-jsdoc');
 
+// 환경설정파일 호출하기: 전역정보로 설정됩니다.
+// 호출위치는 반드시 app.js내 최상위에서 호출할 것....
+require('dotenv').config();
+
+var sequelize = require('./models/index.js').sequelize;
+
 // express-ejs-layouts 패키지 참조
 var expressLayouts = require('express-ejs-layouts');
 
@@ -16,6 +22,9 @@ var channelAPIRouter = require('./routes/channelAPI');
 var memberAPIRouter = require('./routes/memberAPI');
 
 var app = express();
+
+//mysql과 자동연결처리 및 모델기반 물리 테이블 생성처리제공
+sequelize.sync();
 
 // api 문서에 대한 설정
 const options = {
