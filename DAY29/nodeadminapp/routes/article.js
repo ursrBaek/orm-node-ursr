@@ -4,6 +4,26 @@
 var express = require('express');
 var router = express.Router();
 
+const moment = require('moment');
+
+var multer = require('multer');
+
+// S3전용 업로드 객체 참조하기
+var { upload } = require('../common/aws_s3.js');
+
+//파일저장위치 지정
+var storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'public/upload/');
+  },
+  filename(req, file, cb) {
+    cb(null, `${moment(Date.now()).format('YYYYMMDDHHMMss')}_${file.originalname}`);
+  },
+});
+
+//일반 업로드처리 객체 생성
+var simpleUpload = multer({ storage: storage });
+
 var db = require('../models');
 const { QueryTypes } = require('sequelize');
 var sequelize = db.sequelize;
@@ -84,9 +104,73 @@ router.get('/create', async (req, res) => {
 });
 
 // 신규 게시글 사용자 등록정보 처리 요청 및 응답 라우팅 메소드
-router.post('/create', async (req, res) => {
+// upload.single('html태그내 file타입인 input의 태그의 name명')
+router.post('/create', simpleUpload.single('file'), async (req, res) => {
   // step1: 사용자가 입력한 게시글 등록 데이터 추출
   const { boardTypeCode, title, contents, articleTypeCode, isDisplayCode, register } = req.body;
+
+  // step2: 추출된 사용자 입력데이터를 단일 게시글 json데이터로 구성해서
+  // DB article 테이블에 영구적으로 저장처리한다.
+  // 저장처리 후 article 테이블에 저장된 데이터 반환됩니다.
+
+  // 등록할 게시글 데이터
+  // 중요~!!! 테이블에 저장/수정할 데이터소스는 반드시 데이터모델의 속성명을 이용해야한다.
+  // 주의 ~ ! article 모델 컬럼에 값이 반드시  들어와야하는 값(IS NOT NULL)
+  const article = {
+    board_type_code: boardTypeCode,
+    title,
+    contents,
+    view_count: 0,
+    ip_address: '111.222.222.222',
+    article_type_code: articleTypeCode,
+    is_display_code: isDisplayCode,
+    reg_member_id: 1,
+    reg_date: Date.now(),
+  };
+
+  // step3: 게시글 정보를 db서버의 article테이블에 저장하고 저장된 값을 다시 반환받는다.
+  const registedArticle = await db.Article.create(article);
+
+  // step1-2: 업로드 파일 추출
+  const uploadFile = req.file;
+
+  // 업로드된 파일이 존재하는 경우만 데이터처리
+  if (uploadFile) {
+    var filePath = '/upload/' + uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명-('/upload/')도메인주소가 생략된 파일링크주소
+    var fileName = uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명
+    var fileOrignalName = uploadFile.originalname; // 클라이언트에서 선택한 오리지널 파일명
+    var fileSize = uploadFile.size; // 파일크기 (kb)
+    var fileType = uploadFile.mimetype; // 파일포맷
+
+    const file = {
+      article_id: registedArticle.article_id,
+      file_name: fileOrignalName,
+      file_size: fileSize,
+      file_path: filePath,
+      file_type: fileType,
+      reg_date: Date.now(),
+      reg_member_id: 1,
+    };
+
+    await db.ArticleFile.create(file);
+  }
+
+  // step4: 게시글 목록 웹페이지로 이동처리
+  res.redirect('/article/list');
+});
+
+// 신규 게시글 사용자 등록정보 처리 요청 및 응답 라우팅 메소드 - S3에 파일 업로드
+router.post('/creates3', upload.getUpload('upload/').fields([{ name: 'file', maxCount: 1 }]), async (req, res) => {
+  // step1: 사용자가 입력한 게시글 등록 데이터 추출
+  const { boardTypeCode, title, contents, articleTypeCode, isDisplayCode, register } = req.body;
+
+  // step1-2: 업로드 파일 추출
+  const uploadFile = req.files.file[0];
+  var filePath = '/upload/' + uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명-('/upload/')도메인주소가 생략된 파일링크주소
+  var fileName = uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명
+  var fileOrignalName = uploadFile.originalname; // 클라이언트에서 선택한 오리지널 파일명
+  var fileSize = uploadFile.size; // 파일크기 (kb)
+  var fileType = uploadFile.mimetype; // 파일포맷
 
   // step2: 추출된 사용자 입력데이터를 단일 게시글 json데이터로 구성해서
   // DB article 테이블에 영구적으로 저장처리한다.

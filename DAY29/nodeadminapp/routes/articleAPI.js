@@ -4,6 +4,25 @@
 const express = require('express');
 const router = express.Router();
 
+const moment = require('moment');
+
+var multer = require('multer');
+
+// S3전용 업로드 객체 참조하기
+var { upload } = require('../common/aws_s3.js');
+
+//파일저장위치 지정
+var storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, 'public/upload/');
+  },
+  filename(req, file, cb) {
+    cb(null, `${moment(Date.now()).format('YYYYMMDDHHMMss')}_${file.originalname}`);
+  },
+});
+//일반 업로드처리 객체 생성
+var simpleUpload = multer({ storage: storage });
+
 // 전체 게시글 목록 데이터 조회 반환 API 라우팅 메소드
 // http://localhost:3000/api/article/all
 router.get('/all', async (req, res) => {
@@ -167,6 +186,63 @@ router.post('/update', async (req, res) => {
     apiResult.data = 0;
     apiResult.result = 'Failed';
   }
+  res.json(apiResult);
+});
+
+router.post('update', async (req, res) => {});
+
+// 파일 업로드 전용 RESTful API
+router.post('/upload', simpleUpload.single('files'), async (req, res) => {
+  const apiResult = {
+    code: 200,
+    data: null,
+    result: '',
+  };
+
+  try {
+    const uploadFile = req.file;
+    var filePath = '/upload/' + uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명-('/upload/')도메인주소가 생략된 파일링크주소
+    var fileName = uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명
+    var fileOriginalName = uploadFile.originalname; // 클라이언트에서 선택한 오리지널 파일명
+    var fileSize = uploadFile.size; // 파일크기 (kb)
+    var fileType = uploadFile.mimetype; // 파일포맷
+
+    apiResult.code = 200;
+    apiResult.data = { filePath, fileName, fileOriginalName, fileSize, fileType };
+    apiResult.result = 'ok';
+  } catch (err) {
+    apiResult.code = 500;
+    apiResult.data = {};
+    apiResult.result = 'failed';
+  }
+
+  res.json(apiResult);
+});
+
+router.post('/uploadS3', upload.getUpload('upload/').fields([{ name: 'file', maxCount: 1 }]), async (req, res) => {
+  const apiResult = {
+    code: 200,
+    data: null,
+    result: '',
+  };
+
+  try {
+    const uploadFile = req.files.file[0];
+    var filePath = '/upload/' + uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명-('/upload/')도메인주소가 생략된 파일링크주소
+    var fileName = uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명
+    var fileOriginalName = uploadFile.originalname; // 클라이언트에서 선택한 오리지널 파일명
+    var fileSize = uploadFile.size; // 파일크기 (kb)
+    var fileType = uploadFile.mimetype; // 파일포맷
+
+    apiResult.code = 200;
+    apiResult.data = { filePath, fileName, fileOriginalName, fileSize, fileType };
+    apiResult.result = 'ok';
+  } catch (err) {
+    apiResult.code = 500;
+    apiResult.data = {};
+    apiResult.result = 'failed';
+  }
+
   res.json(apiResult);
 });
 
