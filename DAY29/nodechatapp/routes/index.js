@@ -4,6 +4,8 @@ var router = express.Router();
 
 const bcrypt = require('bcryptjs');
 
+const jwt = require('jsonwebtoken');
+
 // Model영역에서 db객체 참조하기
 var db = require('../models/index');
 
@@ -76,4 +78,47 @@ router.post('/find', function (req, res, next) {
   res.redirect('/login');
 });
 
+// JWT 토큰 생성 웹페이지 요청과 응답
+router.get('/makeToken', async function (req, res, next) {
+  let token = '';
+  res.render('makeToken.ejs', { token, layout: false });
+});
+
+// JWT 토큰 생성하고 토큰 확인하기
+router.post('/makeToken', async function (req, res, next) {
+  let token = '';
+
+  const { userId, email, name, userType, telephone } = req.body;
+
+  // JWT 토큰에 담을 JSON 데이터 구조 . 및데이터 바인딩
+  const jsonTokenData = {
+    userId,
+    email,
+    name,
+    userType,
+    telephone,
+  };
+
+  //  jwt.sign('JSON데이터',토큰인증키,{옵션_유효기간(expiresIn_파기일시),발급자(issuer))})
+  // expiresIn 옵션 포맷. 24h - 24시간 뒤, 200d - 200일 뒤, 60m - 60분 뒤
+  // 토큰 생성일시를 기준으로 해당 expiresIn의 값 만큼만 유효함.
+  token = await jwt.sign(jsonTokenData, process.env.JWT_SECRET, { expiresIn: '24h', issuer: 'nara' });
+  res.render('makeToken.ejs', { token, layout: false });
+});
+
+// JWT 토큰값 수신하여 토큰값 해석하기
+// http://localhost:3000/readToken?token=토큰값
+router.get('/readToken', async function (req, res, next) {
+  let token = req.query.token;
+  let tokenJsonData = {};
+
+  // 토큰의 유효성을 검사하고 JSON 데이터를 추출함
+  // await jwt.verify(JWT토큰, 해당토큰생성시 사용한 JWT인증키값);
+  try {
+    tokenJsonData = await jwt.verify(token, process.env.JWT_SECRET);
+  } catch (error) {
+    token = '유효하지 않은 토큰입니다.';
+  }
+  res.render('readToken.ejs', { token, tokenJsonData, layout: false });
+});
 module.exports = router;

@@ -6,8 +6,13 @@ var router = express.Router();
 const bcrypt = require('bcryptjs');
 const AES = require('mysql-aes');
 
+const jwt = require('jsonwebtoken');
+
 // Model영역에서 db객체 참조하기
 var db = require('../models/index');
+
+// 사용자 토큰 제공여부 체크 미들웨어 참조하기
+const { tokenAuthChecking } = require('./apiMiddleware');
 
 // 전체 회원목록 데이터 조회 GET 요청 - 전체 회원 목록 데이터 응답
 router.get('/all', async function (req, res, next) {
@@ -89,8 +94,22 @@ router.post('/login', async (req, res) => {
         member.member_password = '';
         member.telephone = AES.decrypt(member.telephone, process.env.MYSQL_AES_KEY);
         resultMsg = 'ok';
+
+        // 인증된 사용자의 기본정보 JWT토큰 생성 발급
+        // step 1: JWT토큰에 담을 사용자 정보 생성
+        // JWT인증 사용자정보 토큰 값 구조 정의 및 데이터 세팅
+        const memberTokenData = {
+          member_id: member.member_id,
+          email: member.email,
+          name: member.name,
+          profile_img_path: member.profile_img_path,
+          telephone: member.telephone,
+        };
+
+        const token = await jwt.sign(memberTokenData, process.env.JWT_SECRET, { expiresIn: '24h', issuer: 'nara' });
+
         apiResult.code = 200;
-        apiResult.data = member;
+        apiResult.data = token;
         apiResult.msg = resultMsg;
       } else {
         resultMsg = 'NotCorrectPassword';
@@ -237,6 +256,42 @@ router.post('/delete', async function (req, res, next) {
   res.json(apiResult);
 });
 
+// 로그인 한 현재 사용자의 회원 기본정보 조회 API
+// 로그인 시 발급한 JWT 토큰은 HTTP Header 영역에 포함되어 전달됨
+router.get('/profile', tokenAuthChecking, async (req, res) => {
+  var apiResult = {
+    code: 400,
+    data: null,
+    result: '',
+  };
+
+  try {
+    // step1: 웹브라우저 헤더에서 사용자 JWT 인증 토큰값을 추출한다.
+    const token = req.headers.authorization.split('Bearer ')[1];
+    const tokenJsonData = await jwt.verify(token, process.env.JWT_SECRET);
+
+    const loginMemberId = tokenJsonData.member_id;
+    console.log('loginMemberId는~?: ', loginMemberId);
+
+    const dbMember = await db.Member.findOne({
+      where: { member_id: loginMemberId },
+      attributes: ['profile_img_path', 'name', 'email', 'telephone', 'birth_date'],
+    });
+
+    dbMember.telephone = AES.decrypt(dbMember.telephone, process.env.MYSQL_AES_KEY);
+
+    apiResult.code = 200;
+    apiResult.data = dbMember;
+    apiResult.result = 'member profile ok';
+  } catch (err) {
+    apiResult.code = 500;
+    apiResult.data = null;
+    apiResult.result = '서버에러발생 관리자에게 문의하세요.';
+  }
+
+  res.json(apiResult);
+});
+
 // 단일 회원정보 데이터 조회 GET 요청 - 단일 회원정보 데이터 응답
 router.get('/:mid', async function (req, res, next) {
   const apiResult = {
@@ -261,4 +316,5 @@ router.get('/:mid', async function (req, res, next) {
 
   res.json(apiResult);
 });
+
 module.exports = router;
