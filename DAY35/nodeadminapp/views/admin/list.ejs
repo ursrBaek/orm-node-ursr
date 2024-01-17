@@ -1,0 +1,119 @@
+        <!--우측 상단 헤더 영역 -->
+        <div class="row wrapper border-bottom white-bg page-heading">
+          <div class="col-lg-10">
+            <h2>관리자 정보 목록</h2>
+            <ol class="breadcrumb">
+              <li>
+                <a href="/">Home > </a>
+              </li>
+              <li>
+                <a> 관리자 정보 목록 ></a>
+              </li>
+              <li class="active">
+                <strong>조회</strong>
+              </li>
+            </ol>
+          </div>
+          <div class="col-lg-2"></div>
+        </div>
+
+        <!--우측 콘텐츠 영역 -->
+        <div class="wrapper wrapper-content">
+          <form action="/admin/list" method="post">
+            <div class="ibox-content m-b-sm border-bottom">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label" for="OrderNo">관리자명</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="admin_name"
+                      value="<%=searchOption.admin_name%>"
+                    />
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label" for="OrderName">아이디</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="admin_id"
+                      value="<%=searchOption.admin_id%>"
+                    />
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label" for="MobileNo">사용여부</label>
+                    <select name="used_yn_code" class="form-control">
+                      <option value="9" <%= searchOption.used_yn_code === '9' ? 'selected' : '' %>>전체</option>
+                      <option value="1"<%= searchOption.used_yn_code === '1' ? 'selected' : '' %>>사용함</option>
+                      <option value="0"<%= searchOption.used_yn_code === '0' ? 'selected' : '' %>>사용안함</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">조회</button>
+                <a href="/admin/create" class="btn btn-info">신규</a>
+              </div>
+            </div>
+          </form>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                  <div class="table-responsive">
+                    <table class="footable table table-hover">
+                      <thead>
+                        <tr>
+                          <th width="10%">관리자고유번호</th>
+                          <th width="10%">관리자아이디</th>
+                          <th width="15%">성명</th>
+                          <th width="15%" data-hide="phone">메일주소</th>
+                          <th width="10%" data-hide="tablet">소속회사</th>
+                          <th width="15%">부서</th>
+                          <th width="10%">사용여부</th>
+                          <th width="15%">등록일시</th>
+                        </tr>
+                      </thead>
+                      <tbody class="hoverTblBody">
+                        <% adminList.forEach(admin => { %>
+                        <tr>
+                          <td><%=admin.admin_member_id%></td>
+                          <td><%=admin.admin_id%></td>
+                          <td>
+                            <a href="/admin/modify/<%=admin.admin_member_id%>"
+                              ><%=admin.admin_name%></a
+                            >
+                          </td>
+                          <td><%=admin.email%></td>
+                          <td><%= admin.company_code == '1' ? '자회사' : '협력회사' %></td>
+                          <td><%=admin.dept_name%></td>
+                          <td><%= admin.used_yn_code == '1' ? 'Y' : 'N' %></td>
+                          <td><%=admin.reg_date%></td>
+                        </tr>
+                        <% }) %>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="7">
+                            <ul class="pagination pull-left"></ul>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script>
+          $(document).ready(function() {
+            $('.footable').footable();
+          });
+          </script>

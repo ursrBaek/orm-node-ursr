@@ -8,6 +8,9 @@ const moment = require('moment');
 
 var multer = require('multer');
 
+// 미들웨어 참조
+const { isLoggedIn, isNotLoggedIn } = require('./sessionMiddleware');
+
 // S3전용 업로드 객체 참조하기
 var { upload } = require('../common/aws_s3.js');
 
@@ -30,7 +33,7 @@ var sequelize = db.sequelize;
 const Op = db.Sequelize.Op;
 
 // 게시글 목록 조회 웹페이지 요청 및 응답 라우팅 메소드
-router.get('/list', async (req, res) => {
+router.get('/list', isLoggedIn, async (req, res) => {
   var searchOption = {
     borderTypeCode: '0',
     title: '',
@@ -78,7 +81,7 @@ router.get('/list', async (req, res) => {
 
 // 게시글 목록에서 조회옵션 데이터를 전달받아 조회옵션기반 게시글 목록 조회 후
 // 게시글 목록 페이지에 대한 요청과 응답처리
-router.post('/list', async (req, res) => {
+router.post('/list', isLoggedIn, async (req, res) => {
   // step1: 사용자가 선택/입력한 조회옵션 데이터를 추출
   const { boardTypeCode, title, isDisplayCode } = req.body;
 
@@ -99,13 +102,13 @@ router.post('/list', async (req, res) => {
 });
 
 // 신규 게시글 등록 웹페이지 요청 및 응답 라우팅 메소드
-router.get('/create', async (req, res) => {
+router.get('/create', isLoggedIn, async (req, res) => {
   res.render('article/create', {});
 });
 
 // 신규 게시글 사용자 등록정보 처리 요청 및 응답 라우팅 메소드
 // upload.single('html태그내 file타입인 input의 태그의 name명')
-router.post('/create', simpleUpload.single('file'), async (req, res) => {
+router.post('/create', isLoggedIn, simpleUpload.single('file'), async (req, res) => {
   // step1: 사용자가 입력한 게시글 등록 데이터 추출
   const { boardTypeCode, title, contents, articleTypeCode, isDisplayCode, register } = req.body;
 
@@ -160,47 +163,52 @@ router.post('/create', simpleUpload.single('file'), async (req, res) => {
 });
 
 // 신규 게시글 사용자 등록정보 처리 요청 및 응답 라우팅 메소드 - S3에 파일 업로드
-router.post('/creates3', upload.getUpload('upload/').fields([{ name: 'file', maxCount: 1 }]), async (req, res) => {
-  // step1: 사용자가 입력한 게시글 등록 데이터 추출
-  const { boardTypeCode, title, contents, articleTypeCode, isDisplayCode, register } = req.body;
+router.post(
+  '/creates3',
+  isLoggedIn,
+  upload.getUpload('upload/').fields([{ name: 'file', maxCount: 1 }]),
+  async (req, res) => {
+    // step1: 사용자가 입력한 게시글 등록 데이터 추출
+    const { boardTypeCode, title, contents, articleTypeCode, isDisplayCode, register } = req.body;
 
-  // step1-2: 업로드 파일 추출
-  const uploadFile = req.files.file[0];
-  var filePath = '/upload/' + uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명-('/upload/')도메인주소가 생략된 파일링크주소
-  var fileName = uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명
-  var fileOrignalName = uploadFile.originalname; // 클라이언트에서 선택한 오리지널 파일명
-  var fileSize = uploadFile.size; // 파일크기 (kb)
-  var fileType = uploadFile.mimetype; // 파일포맷
+    // step1-2: 업로드 파일 추출
+    const uploadFile = req.files.file[0];
+    var filePath = '/upload/' + uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명-('/upload/')도메인주소가 생략된 파일링크주소
+    var fileName = uploadFile.filename; // 서버에 실제 업로드된 물리적 파일명
+    var fileOrignalName = uploadFile.originalname; // 클라이언트에서 선택한 오리지널 파일명
+    var fileSize = uploadFile.size; // 파일크기 (kb)
+    var fileType = uploadFile.mimetype; // 파일포맷
 
-  // step2: 추출된 사용자 입력데이터를 단일 게시글 json데이터로 구성해서
-  // DB article 테이블에 영구적으로 저장처리한다.
-  // 저장처리 후 article 테이블에 저장된 데이터 반환됩니다.
+    // step2: 추출된 사용자 입력데이터를 단일 게시글 json데이터로 구성해서
+    // DB article 테이블에 영구적으로 저장처리한다.
+    // 저장처리 후 article 테이블에 저장된 데이터 반환됩니다.
 
-  // 등록할 게시글 데이터
-  // 중요~!!! 테이블에 저장/수정할 데이터소스는 반드시 데이터모델의 속성명을 이용해야한다.
-  // 주의 ~ ! article 모델 컬럼에 값이 반드시  들어와야하는 값(IS NOT NULL)
-  const article = {
-    board_type_code: boardTypeCode,
-    title,
-    contents,
-    view_count: 0,
-    ip_address: '111.222.222.222',
-    article_type_code: articleTypeCode,
-    is_display_code: isDisplayCode,
-    reg_member_id: 1,
-    reg_date: Date.now(),
-  };
+    // 등록할 게시글 데이터
+    // 중요~!!! 테이블에 저장/수정할 데이터소스는 반드시 데이터모델의 속성명을 이용해야한다.
+    // 주의 ~ ! article 모델 컬럼에 값이 반드시  들어와야하는 값(IS NOT NULL)
+    const article = {
+      board_type_code: boardTypeCode,
+      title,
+      contents,
+      view_count: 0,
+      ip_address: '111.222.222.222',
+      article_type_code: articleTypeCode,
+      is_display_code: isDisplayCode,
+      reg_member_id: 1,
+      reg_date: Date.now(),
+    };
 
-  // step3: 게시글 정보를 db서버의 article테이블에 저장하고 저장된 값을 다시 반환받는다.
-  const registedArticle = await db.Article.create(article);
+    // step3: 게시글 정보를 db서버의 article테이블에 저장하고 저장된 값을 다시 반환받는다.
+    const registedArticle = await db.Article.create(article);
 
-  // step4: 게시글 목록 웹페이지로 이동처리
-  res.redirect('/article/list');
-});
+    // step4: 게시글 목록 웹페이지로 이동처리
+    res.redirect('/article/list');
+  },
+);
 
 // 기존 게시물 삭제처리 요청 및 응답 라우팅 메소드
 // http://localhost:3000/article/delete?aid=3
-router.get('/delete', async (req, res) => {
+router.get('/delete', isLoggedIn, async (req, res) => {
   // step1: 삭제하려는 게시글 고유번호 추출
   const article_id = req.query.aid;
 
@@ -213,7 +221,7 @@ router.get('/delete', async (req, res) => {
 
 // 기존 게시글 정보 확인 및 수정 웹페이지 요청과 응답 라우팅 메소드
 // http://localhost:3000/article/modify/3
-router.get('/modify/:aid', async (req, res) => {
+router.get('/modify/:aid', isLoggedIn, async (req, res) => {
   // step1: 선택한 게시글 고유번호를 파라미터 방식으로 URL을 통해 전달받음
   const article_id = req.params.aid;
 
@@ -235,7 +243,7 @@ router.get('/modify/:aid', async (req, res) => {
 // 기존 게시글 사용자 수정정보 처리 요청과 응답 라우팅 메소드
 // http://localhost:3000/article/modify/1
 // POST
-router.post('/modify/:aid', async (req, res) => {
+router.post('/modify/:aid', isLoggedIn, async (req, res) => {
   // 게시글 고유번호 URL 파라미터에서 추출
   const article_id = req.params.aid;
 
