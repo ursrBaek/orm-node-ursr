@@ -1,6 +1,9 @@
 // socket.io 패키지 참조
 const SocketIO = require('socket.io');
 
+//socket.io-redis참조
+var redis = require('socket.io-redis');
+
 //socket.js모듈 기능정의
 module.exports = (server) => {
   // SocketIO('서버소켓이 실행될 백엔드서버 객체', 클라이언트에 제공될 소켓 라이브러리 경로)
@@ -15,6 +18,15 @@ module.exports = (server) => {
       methods: ['GET', 'POST'],
     },
   });
+
+  //Redis Backplain 연결설정
+  io.adapter(
+    redis({
+      host: '127.0.0.1',
+      port: '6379',
+      // password: process.env.REDIS_PW
+    }),
+  );
 
   // io.on객체의 커넥션 이벤트에 대한 이벤트 핸들러 정의
   // 클라이언트와 연결이 완료되면(connection 이벤트 발생) 메시지 수발신 기능을 제공
