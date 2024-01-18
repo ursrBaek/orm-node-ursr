@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>모든 사용자간 채팅</title>
+</head>
+  <body>
+    <h1>서버소켓과 연결된 모든 사용자간 채팅하기</h1>
+    대화명: <input type="text" id="nickname" /> </br>
+    메시지: <input type="text" id="message"/></br>
+    <button id="btnSend">전송</button>
+    <hr />
+    대화 이력 보기
+    <ul id="chatHistory"></ul>
+
+    <!-- jquery cdn 라이브러리 참조 -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- socket.io javascript library 참조 -->
+    <script src="/socket.io/socket.io.js"></script>
+    
+    <!-- 개발자정의 소켓 통신 기능 구현 -->
+    <script>
+      // STEP1: socket.io.js에서 제공하는 io객체를 이용해 서버소켓과 연결
+      // io.connect('서버소켓연결 경로')
+      var socket = io.connect('/'); // http://localhost:3000/ 주소로 연결
+      
+      //전송버튼 클릭시 사용자 입력메시지를 서버에 특정 이벤트 기능(broadcast)으로 전송한다.
+      $("#btnSend").click(function(){
+        var msg = $("#message").val();
+        var nickName = $("#nickname").val();
+        var sendMsg = `${nickName}:${msg}`;
+        // socket.emit('서버소켓 메시지 이벤트 수신기명', 전달할 데이터)
+        socket.emit("broadcast",sendMsg);
+        // socket.emit("test",sendMsg);
+      });
+
+      // 서버소켓에서 보내주는 클라이언트 이벤트 수신기들 기능 정의
+      socket.on("receiveAll",function(receiveMsg){
+        console.log("메시지 수신기-데이터","receiveAll",receiveMsg);
+        // 도착한 메시지 문자열을 ul태그 li태그 형식으로 추가
+        $("#chatHistory").append(`<li>${receiveMsg}</li>`);
+      });
+
+      socket.on("receiveTest",function(receiveMsg){
+        console.log("메시지 수신기-데이터","receiveAll",receiveMsg);
+        // 도착한 메시지 문자열을 ul태그 li태그 형식으로 추가
+        $("#chatHistory").append(`<li>${receiveMsg}</li>`);
+      });
+    </script>
+  </body>
+</html>
