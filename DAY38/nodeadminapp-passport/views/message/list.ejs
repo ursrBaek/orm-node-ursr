@@ -1,0 +1,125 @@
+
+
+            <!--우측 상단 헤더 영역 -->
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>채팅 메시지 관리</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="/">Home > </a>
+                        </li>
+                        <li>
+                            <a>채팅 메시지 관리 > </a>
+                        </li>
+                        <li class="active">
+                            <strong>조회</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
+
+            <!--우측 콘텐츠 영역 -->
+            <div class="wrapper wrapper-content">
+
+
+                <!-- 조회 옵션 -->
+                <div class="ibox-content m-b-sm border-bottom">
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label" for="OrderNo">메세지 유형</label>
+                                <select class="form-control">
+                                  <!-- board_type_code -->
+                                  <option value="0">선택</option>
+                                  <option value="1">고정 메세지</option>
+                                  <option value="2">일반 메세지</option>
+                              </select>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label" for="OrderName">별명</label>
+                                <input type="text" class="form-control">
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="form-group">
+                                <label class="control-label" for="OrderName">메세지 상태</label>
+                                <select class="form-control">
+                                  <!-- article_type_code -->
+                                    <option value="0">선택</option>
+                                    <option value="1">읽음</option>
+                                    <option value="2">안읽음</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="button" class="btn btn-primary">조회</button>
+                        <a href="/message/create" class="btn btn-info">신규</a>
+                    </div>
+                </div>
+
+                <!-- 리스트 -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="ibox float-e-margins">
+                            <div class="ibox-content">
+                                <div class="table-responsive">
+
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th width="10%">별명</th>
+                                                <th width="20%">내용</th>
+                                                <th width="10%">아이디</th>
+                                                <th width="10%">아이피 주소</th>
+                                                <th width="10%">메세지 유형</th>
+                                                <th width="10%">메세지 상태</th>
+                                                <th width="10%">등록일</th>
+                                            </tr>
+                                        </thead>
+
+                                    
+                                        <tbody class="hoverTblBody">
+                                            <% for(let i=0; i<channel_msg.length; i++) { %>
+                                            <tr>
+                                                <td><%=channel_msg[i].nick_name%></td>
+                                                <td><a href="/message/modify/<%=channel_msg[i].channel_msg_id%>"><%=channel_msg[i].channel_msg%></a></td>
+                                                <td><%=channel_msg[i].connection_id%></td>
+                                                <td><%=channel_msg[i].ip_address%></td>
+                                                <td>
+                                                    <% if (channel_msg[i].msg_type_code === "1") {%>
+                                                        고정 메세지
+                                                    <%}%>
+                                                    <% if (channel_msg[i].msg_type_code === "2") {%>
+                                                        일반 메세지
+                                                    <%}%>
+                                                </td>
+                                                <td>
+                                                    <% if (channel_msg[i].msg_state_code === "1") {%>
+                                                        사용중
+                                                    <%}%>
+                                                    <% if (channel_msg[i].msg_state_code === "2") {%>
+                                                        탈퇴
+                                                    <%}%>
+                                                </td>
+                                                <td><%=channel_msg[i].msgDate%></td>
+                                            </tr>
+                                            <% } %>
+                                        </tbody>
+                                    </table>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </div>
+            

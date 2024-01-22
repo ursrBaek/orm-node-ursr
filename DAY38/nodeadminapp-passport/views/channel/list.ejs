@@ -1,0 +1,90 @@
+
+        <!--우측 상단 헤더 영역 -->
+        <div class="row wrapper border-bottom white-bg page-heading">
+          <div class="col-lg-10">
+            <h2>채널 정보 관리</h2>
+            <ol class="breadcrumb">
+              <li>
+                <a href="/">Home ></a>
+              </li>
+              <li>
+                <a>채널 정보 관리 ></a>
+              </li>
+              <li class="active">
+                <strong>조회</strong>
+              </li>
+            </ol>
+          </div>
+          <div class="col-lg-2"></div>
+        </div>
+
+        <!--우측 콘텐츠 영역 -->
+        <div class="wrapper wrapper-content">
+          <form action="/channel/list" method="post">
+            <div class="ibox-content m-b-sm border-bottom">
+              <div class="row">
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label" for="OrderNo">채널명</label>
+                    <input type="text" class="form-control" name="channel_name" value="<%=searchOption.channel_name%>" />
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label" for="OrderName">등록 아이디</label>
+                    <input type="text" class="form-control" name="reg_member_id" value="<%=searchOption.reg_member_id%>"/>
+                  </div>
+                </div>
+                <div class="col-sm-4">
+                  <div class="form-group">
+                    <label class="control-label" for="MobileNo">채널 오픈상태</label>
+                    <select name="channel_state_code" class="form-control">
+                      <option value="9" <%= searchOption.channel_state_code === '9' ? 'selected' : '' %>>전체</option>
+                      <option value="1"<%= searchOption.channel_state_code === '1' ? 'selected' : '' %>>Y</option>
+                      <option value="0"<%= searchOption.channel_state_code === '0' ? 'selected' : '' %>>N</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <div class="text-center">
+                <button type="submit" class="btn btn-primary">조회</button>
+                <a href="/channel/create" class="btn btn-info">신규</a>
+              </div>
+            </div>
+          </form>
+
+          <div class="row">
+            <div class="col-lg-12">
+              <div class="ibox float-e-margins">
+                <div class="ibox-content">
+                  <div class="table-responsive">
+                    <table class="table table-hover">
+                      <thead>
+                        <tr>
+                          <th width="5%">채널아이디</th>
+                          <th width="20%">채널명</th>
+                          <th width="20%">채널설명</th>
+                          <th width="10%">채널오픈상태</th>
+                          <th width="10%">등록일</th>
+                          <th width="10%">동시 접속자</th>
+                        </tr>
+                      </thead>
+                      <tbody class="hoverTblBody">
+                        <% channelList.forEach(channel => { %>
+                          <tr>
+                            <td><%=channel.channel_id%></td>
+                            <td><a href="/channel/modify/<%=channel.channel_id%>"><%=channel.channel_name%></a></td>
+                            <td><%=channel.channel_desc%></td>
+                            <td><%=channel.channel_state_code == 1 ? 'Y' : 'N'%></td>
+                            <td><%=channel.reg_date%></td>
+                            <td><%=channel.user_limit%></td>
+                          </tr>
+                          <% }) %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>

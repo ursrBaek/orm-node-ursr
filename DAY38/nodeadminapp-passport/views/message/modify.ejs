@@ -1,0 +1,84 @@
+
+            <!--우측 콘텐츠 헤더영역 -->
+            <div class="row wrapper border-bottom white-bg page-heading">
+                <div class="col-lg-10">
+                    <h2>채팅 메시지 관리</h2>
+                    <ol class="breadcrumb">
+                        <li>
+                            <a href="/">Home > </a>
+                        </li>
+                        <li>
+                            <a>채팅 메시지 관리 > </a>
+                        </li>
+                        <li class="active">
+                            <strong>생성</strong>
+                        </li>
+                    </ol>
+                </div>
+                <div class="col-lg-2">
+
+                </div>
+            </div>
+
+            <!--우측 콘텐츠 영역 -->
+            <form action="/message/modify/<%=channel_msg.channel_msg_id%>" method="post">
+                <div class="wrapper wrapper-content">
+                    <div class="ibox-content m-b-sm border-bottom">
+    
+    
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label">닉네임</label>
+                                    <input type="text" class="form-control" value="<%=channel_msg.nick_name%>">
+                                </div>
+                            </div>
+                            
+                            <div class="col-sm-4">
+                              <div class="form-group">
+                                <label class="control-label">아이디</label>
+                                <input type="text" class="form-control" value="<%=channel_msg.connection_id%>">
+                              </div>
+                            </div>
+                            </div>
+
+                            <div class="row">
+
+                            </div>
+
+                            <div class="row">
+                            <div class="col-sm-4">
+                                <div class="form-group">
+                                    <label class="control-label">메세지 유형</label>
+                                    <select class="form-control">
+                                      <option value="0" <% if (channel_msg.msg_type_code == "0") { %> selected <%}%>>선택</option>
+                                      <option value="1" <% if (channel_msg.msg_type_code == "1") { %> selected <%}%>>고정 메세지</option>
+                                      <option value="2" <% if (channel_msg.msg_type_code == "2") { %> selected <%}%>>일반 메세지</option>
+                                  </select>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+                        <div class="row">
+    
+                            <div class="col-sm-12">
+                                <div class="form-group">
+                                  <label class="control-label">내용</label>
+                                  <textarea class="form-control" rows="5" cols="12"><%=channel_msg.channel_msg%></textarea>
+                                </div>
+                            </div>
+    
+                        </div>
+    
+    
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary">생성</button>
+                            <a href="/message/delete" class="btn btn-danger">삭제</a>
+                            <a href="/message/list" class="btn btn-info">목록</a>
+                        </div>
+    
+                    </div>
+                </div>
+
+            </form>
