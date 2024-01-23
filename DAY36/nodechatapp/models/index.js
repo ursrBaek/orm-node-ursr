@@ -22,6 +22,12 @@ db.Sequelize = Sequelize; //Sequelize팩키지에서 제공하는 각종 데이�
 
 // 관리자 계정 정보 모델 추가
 db.Member = require('./member.js')(sequelize, Sequelize);
+// 채널 정보 모듈 참조
+db.Channel = require('./channel.js')(sequelize, Sequelize);
+// 채널 멤버 정보 모듈 참조
+db.ChannelMember = require('./channelMember.js')(sequelize, Sequelize);
+// 채널 메시지 정보 모듈 참조
+db.ChannelMessage = require('./channelMessage.js')(sequelize, Sequelize);
 
 //db객체 외부로 노출하기
 module.exports = db;

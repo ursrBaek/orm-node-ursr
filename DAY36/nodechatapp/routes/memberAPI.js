@@ -14,16 +14,24 @@ var db = require('../models/index');
 // 사용자 토큰 제공여부 체크 미들웨어 참조하기
 const { tokenAuthChecking } = require('./apiMiddleware');
 
+// 각종 열거형 상수 참조하기
+const constants = require('../common/enum');
+
 // 전체 회원목록 데이터 조회 GET 요청 - 전체 회원 목록 데이터 응답
-router.get('/all', async function (req, res, next) {
+router.get('/all', tokenAuthChecking, async function (req, res, next) {
   const apiResult = {
-    code: 200,
+    code: 400,
     data: [],
-    result: 'ok',
+    result: '',
   };
 
   try {
-    const memberList = await db.Member.findAll();
+    const memberList = await db.Member.findAll({
+      attributes: ['member_id', 'email', 'name', 'profile_img_path', 'telephone'],
+      where: {
+        use_state_code: constants.USE_STATE_CODE_USED,
+      },
+    });
     apiResult.code = 200;
     apiResult.data = memberList;
     apiResult.result = 'ok';
