@@ -3,6 +3,8 @@ const jwt = require('jsonwebtoken');
 
 // socket.io 패키지 참조
 const SocketIO = require('socket.io');
+//socket.io-redis참조
+var redis = require('socket.io-redis');
 
 // DB 객체 참조하기
 const db = require('./models');
@@ -21,6 +23,15 @@ module.exports = (server) => {
       methods: ['GET', 'POST'],
     },
   });
+
+  //Redis Backplain 연결설정
+  io.adapter(
+    redis({
+      host: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      password: process.env.REDIS_PASSWORD,
+    }),
+  );
 
   // io.on객체의 커넥션 이벤트에 대한 이벤트 핸들러 정의
   // 클라이언트와 연결이 완료되면(connection 이벤트 발생) 메시지 수발신 기능을 제공
